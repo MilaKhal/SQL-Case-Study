@@ -156,7 +156,36 @@ the guest user's ID is always 0. Include in your output the name of the
 facility, the name of the member formatted as a single column, and the cost.
 Order by descending cost, and do not use any subqueries. */
 
-NOT COMPLETED!!!
+********* I did not find a way to avoid subqueries******* I've reached out for help to my advisor and the TA but no one offered******
+********** working suggestions. Please reach out to me mila.khalitova@ufl.edu if you can help me fugure this out*****
+______________________________________
+SELECT Sub1.member_name, subquery.name, subquery.PRICE
+FROM (
+
+SELECT CONCAT( firstname, ' ', surname ) AS member_name, memid
+FROM Members AS M
+WHERE memid
+IN (
+
+SELECT memid
+FROM Bookings
+WHERE starttime LIKE '2012-09-14%'
+)
+) AS Sub1
+INNER JOIN (
+
+SELECT name, Bookings.bookid, Bookings.memid, Facilities.facid,
+CASE WHEN Bookings.memid =0
+THEN guestcost * Bookings.slots
+ELSE membercost * Bookings.slots
+END AS Price
+FROM Facilities
+JOIN Bookings ON Facilities.facid = Bookings.facid
+) AS subquery ON Sub1.memid = subquery.memid
+WHERE subquery.PRICE >30
+ORDER BY subquery.PRICE DESC
+________________________________
+
 
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
 ________________________________
@@ -197,6 +226,8 @@ Copy and paste the LocalSQLConnection.py script into an empty Jupyter notebook, 
 
 Make sure that the SQLFiles folder containing thes files is in your working directory, and
 that you haven't changed the name of the .db file from 'sqlite\db\pythonsqlite'.
+
+******** This method did not work.  I've reached out for help to the TA but received no help. So I used the PHPMyAdmin interface******
 
 You should see the output from the initial query 'SELECT * FROM FACILITIES'.
 

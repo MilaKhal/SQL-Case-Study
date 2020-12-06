@@ -156,34 +156,24 @@ the guest user's ID is always 0. Include in your output the name of the
 facility, the name of the member formatted as a single column, and the cost.
 Order by descending cost, and do not use any subqueries. */
 
-********* I did not find a way to avoid subqueries******* I've reached out for help to my advisor and the TA but no one offered******
-********** working suggestions. Please reach out to me mila.khalitova@ufl.edu if you can help me fugure this out*****
-______________________________________
-SELECT Sub1.member_name, subquery.name, subquery.PRICE
-FROM (
-
-SELECT CONCAT( firstname, ' ', surname ) AS member_name, memid
-FROM Members AS M
-WHERE memid
-IN (
-
-SELECT memid
-FROM Bookings
-WHERE starttime LIKE '2012-09-14%'
-)
-) AS Sub1
-INNER JOIN (
-
-SELECT name, Bookings.bookid, Bookings.memid, Facilities.facid,
-CASE WHEN Bookings.memid =0
-THEN guestcost * Bookings.slots
-ELSE membercost * Bookings.slots
-END AS Price
-FROM Facilities
-JOIN Bookings ON Facilities.facid = Bookings.facid
-) AS subquery ON Sub1.memid = subquery.memid
-WHERE subquery.PRICE >30
-ORDER BY subquery.PRICE DESC
+******** Resubmitted this one ******
+___________
+SELECT CONCAT( firstname, ' ', surname ) AS member, name AS facility,
+CASE WHEN firstname = 'GUEST'
+THEN guestcost * slots
+ELSE membercost * slots
+END AS cost
+FROM Members
+INNER JOIN Bookings ON Members.memid = Bookings.memid
+INNER JOIN Facilities ON Bookings.facid = Facilities.facid
+WHERE starttime >= '2012-09-14'
+AND starttime < '2012-09-15'
+AND CASE WHEN firstname = 'GUEST'
+THEN guestcost * slots
+ELSE membercost * slots
+END >30
+ORDER BY cost DESC
+LIMIT 0 , 30
 ________________________________
 
 
